@@ -40,6 +40,7 @@ function App() {
       <div id="search-options">
         <label>
           <input
+            id="search-name"
             type="checkbox"
             checked={searchFields.includes("name")}
             onChange={() =>
@@ -52,6 +53,7 @@ function App() {
 
         <label>
           <input
+            id="search-tags"
             type="checkbox"
             checked={searchFields.includes("tags")}
             onChange={() =>
