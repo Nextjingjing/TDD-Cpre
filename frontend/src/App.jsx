@@ -26,9 +26,10 @@ function App() {
   }, [searchQuery, searchFields]);
 
   return (
-    <div>
+    <div id="app-container">
       {/* ช่องค้นหา */}
       <input
+        id="search-input"
         type="text"
         placeholder="ค้นหาโน้ต..."
         value={searchQuery}
@@ -36,15 +37,15 @@ function App() {
       />
 
       {/* ตัวเลือกฟิลด์ค้นหา */}
-      <div>
+      <div id="search-options">
         <label>
           <input
             type="checkbox"
             checked={searchFields.includes("name")}
             onChange={() =>
-            setSearchFields((prev) =>
-              prev.includes("name") ? prev.filter(f => f !== "name") : [...prev, "name"]
-            )}
+              setSearchFields((prev) =>
+                prev.includes("name") ? prev.filter(f => f !== "name") : [...prev, "name"]
+              )}
           />
           ค้นหาจากชื่อ
         </label>
@@ -54,20 +55,22 @@ function App() {
             type="checkbox"
             checked={searchFields.includes("tags")}
             onChange={() =>
-            setSearchFields((prev) =>
-              prev.includes("tags") ? prev.filter(f => f !== "tags") : [...prev, "tags"]
-            )}
+              setSearchFields((prev) =>
+                prev.includes("tags") ? prev.filter(f => f !== "tags") : [...prev, "tags"]
+              )}
           />
           ค้นหาจากแท็ก
         </label>
       </div>
 
       {/* แสดงรายการโน้ตที่ค้นพบ */}
-      {data.length > 0 ? (
-        data.map((note, index) => <NoteItem key={index} note={note} />)
-      ) : (
-        <p>ไม่พบโน้ตที่ค้นหา</p>
-      )}
+      <div id="notes-list">
+        {data.length > 0 ? (
+          data.map((note) => <NoteItem key={note.id} id={`note-${note.id}`} note={note} />)
+        ) : (
+          <p id="no-results">ไม่พบโน้ตที่ค้นหา</p>
+        )}
+      </div>
     </div>
   );
 }
