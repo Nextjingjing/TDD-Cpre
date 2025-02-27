@@ -5,15 +5,18 @@ import axios from "axios";
 function App() {
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchFields, setSearchFields] = useState(["name", "tags"]); // ฟิลด์ที่ใช้ค้นหา
+  const [searchFields, setSearchFields] = useState(["name", "tags"]);
 
   useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setData([]);
+      return;
+    }
+
     const fetchData = async () => {
       try {
         const fieldsQuery = searchFields.map((field) => `field=${field}`).join("&");
-        const url = searchQuery
-          ? `http://127.0.0.1:8000/api/notes/?q=${searchQuery}&${fieldsQuery}`
-          : "http://127.0.0.1:8000/api/notes/";
+        const url = `http://127.0.0.1:8000/api/notes/?q=${searchQuery}&${fieldsQuery}`;
 
         const response = await axios.get(url);
         setData(response.data);
@@ -26,52 +29,66 @@ function App() {
   }, [searchQuery, searchFields]);
 
   return (
-    <div id="app-container">
+    <div className="container mt-5">
       {/* ช่องค้นหา */}
-      <input
-        id="search-input"
-        type="text"
-        placeholder="ค้นหาโน้ต..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          <input
+            type="text"
+            className="form-control shadow-sm p-3 mb-4 rounded"
+            placeholder="ค้นหาโน้ต..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </div>
 
       {/* ตัวเลือกฟิลด์ค้นหา */}
-      <div id="search-options">
-        <label>
-          <input
-            id="search-name"
-            type="checkbox"
-            checked={searchFields.includes("name")}
-            onChange={() =>
-              setSearchFields((prev) =>
-                prev.includes("name") ? prev.filter(f => f !== "name") : [...prev, "name"]
-              )}
-          />
-          ค้นหาจากชื่อ
-        </label>
+      <div className="row justify-content-center">
+        <div className="col-md-8 d-flex gap-3 mb-4">
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={searchFields.includes("name")}
+              onChange={() =>
+                setSearchFields((prev) =>
+                  prev.includes("name") ? prev.filter((f) => f !== "name") : [...prev, "name"]
+                )
+              }
+            />
+            <label className="form-check-label">ค้นหาจากชื่อ</label>
+          </div>
 
-        <label>
-          <input
-            id="search-tags"
-            type="checkbox"
-            checked={searchFields.includes("tags")}
-            onChange={() =>
-              setSearchFields((prev) =>
-                prev.includes("tags") ? prev.filter(f => f !== "tags") : [...prev, "tags"]
-              )}
-          />
-          ค้นหาจากแท็ก
-        </label>
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={searchFields.includes("tags")}
+              onChange={() =>
+                setSearchFields((prev) =>
+                  prev.includes("tags") ? prev.filter((f) => f !== "tags") : [...prev, "tags"]
+                )
+              }
+            />
+            <label className="form-check-label">ค้นหาจากแท็ก</label>
+          </div>
+        </div>
       </div>
 
       {/* แสดงรายการโน้ตที่ค้นพบ */}
-      <div id="notes-list">
-        {data.length > 0 ? (
-          data.map((note) => <NoteItem key={note.id} id={`note-${note.id}`} note={note} />)
-        ) : (
-          <p id="no-results">ไม่พบโน้ตที่ค้นหา</p>
-        )}
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          {data.length > 0 ? (
+            <div className="list-group shadow-sm">
+              {data.map((note) => (
+                <NoteItem key={note.id} id={`note-${note.id}`} note={note} className="list-group-item" />
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-muted">กรุณาป้อนข้อความเพื่อค้นหา</p>
+          )}
+        </div>
       </div>
     </div>
   );
